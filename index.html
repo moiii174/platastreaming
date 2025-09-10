@@ -1375,8 +1375,7 @@
             totalElement.textContent = `Q${total.toFixed(2)}`;
         }
 
-        // Handle WhatsApp checkout
-        function handleWhatsAppCheckout() {
+        // Handle WhatsApp checkout {
             const fullName = document.getElementById('fullName').value;
             const phone = document.getElementById('phone').value;
             const bank = document.getElementById('bank').value;
@@ -1430,6 +1429,86 @@
                 showToast('Redirigiendo a WhatsApp...');
             }, 1000);
         }
+        // Handle WhatsApp checkout - VERSIÓN CORREGIDA Y OPTIMIZADA
+function handleWhatsAppCheckout() {
+    const fullName = document.getElementById('fullName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const bank = document.getElementById('bank').value;
+
+    // Validaciones
+    if (!fullName || !phone || !bank) {
+        showToast('Por favor completa todos los campos');
+        return;
+    }
+
+    if (!/^\d{8}$/.test(phone)) {
+        showToast('El número debe tener exactamente 8 dígitos');
+        document.getElementById('phoneError')?.style.setProperty('display', 'block');
+        return;
+    }
+
+    // Mostrar loading
+    loading.style.display = 'flex';
+
+    setTimeout(() => {
+        loading.style.display = 'none';
+
+        // Construir mensaje profesional
+        let message = `
+¡Hola! Quiero realizar mi pedido en PLAXY 🟢
+
+*📦 DATOS DEL CLIENTE:*
+• Nombre: ${fullName}
+• Teléfono: +502${phone}
+• Banco: ${bank}
+
+━━━━━━━━━━━━━━━━━
+*🛒 PRODUCTOS:*
+`;
+
+        const discountPerItem = getDiscountPerItem();
+        let totalPrice = 0;
+
+        cart.forEach(item => {
+            const product = products.find(p => p.id === item.id);
+            const finalPrice = product.price - discountPerItem;
+            const itemTotal = finalPrice * item.quantity;
+            totalPrice += itemTotal;
+            message += `• ${item.name} x${item.quantity}\n  Q${finalPrice.toFixed(2)} c/u → Q${itemTotal.toFixed(2)}\n`;
+        });
+
+        message += `
+━━━━━━━━━━━━━━━━━
+*💰 RESUMEN:*
+• Subtotal: Q${cart.reduce((sum, item) => sum + (products.find(p => p.id === item.id).price * item.quantity), 0).toFixed(2)}
+• Descuento: Q${(discountPerItem * cart.reduce((sum, item) => sum + item.quantity, 0)).toFixed(2)}
+• TOTAL A PAGAR: *Q${totalPrice.toFixed(2)}*
+
+📌 *Instrucciones:* Realizaré el pago y les enviaré el comprobante.
+⏱️ Entrega estimada: hasta 15 minutos tras confirmación.
+`;
+
+        // Codificar TODO el mensaje para URL
+        const encodedMessage = encodeURIComponent(message.trim());
+
+        // Generar URL de WhatsApp
+        const whatsappUrl = `https://wa.me/50251143339?text=${encodedMessage}`;
+
+        // Abrir en nueva pestaña
+        window.open(whatsappUrl, '_blank');
+
+        // Confirmación visual
+        showToast('✅ ¡Listo! Abriendo WhatsApp...');
+
+        // Vaciar carrito (opcional, descomenta si quieres)
+        /*
+        cart = [];
+        updateCartCount();
+        renderCartItems();
+        updateCartTotals();
+        */
+    }, 1000);
+}
     </script>
 </body>
 </html>

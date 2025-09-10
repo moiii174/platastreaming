@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- FAVICON - Tu logotipo personalizado en la pestaña del navegador -->
+<link rel="icon" type="image/png" sizes="32x32" href="https://i.postimg.cc/PqcT95YB/user-image-20250910-21043242280c557ab.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://i.postimg.cc/PqcT95YB/user-image-20250910-21043242280c557ab.png">
+<link rel="apple-touch-icon" sizes="180x180" href="https://i.postimg.cc/PqcT95YB/user-image-20250910-21043242280c557ab.png">
+<link rel="manifest" href="/site.webmanifest">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLAXY - Catálogo Profesional de Productos Digitales</title>
+    <style>
+        :root {
+            --primary-color: #00ff00;
+            --bg-color: #000000;
+            --text-color: #00ff00;
+            --hover-scale: 1.05;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform var(--transition-speed);
+        }
+
+        .menu-btn:hover {
+            transform: scale(var(--hover-scale));
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .cart-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-icon {
+            font-size: 1.5rem;
+            transition: transform var(--transition-speed);
+        }
+
+        .cart-icon:hover {
+            transform: scale(var(--hover-scale));
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Live Purchase Simulator */
+        .live-purchases {
+            background-color: rgba(0, 30, 0, 0.8);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary-color);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .live-title {
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .live-title::before {
+            content: "✓";
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .purchase-message {
+            padding: 0.5rem;
+            background-color: rgba(0, 50, 0, 0.5);
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .purchase-message.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Catalog Styles */
+        .catalog-container {
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .product-card {
+            background-color: rgba(30, 30, 30, 0.8);
+            border-radius: 10px;
+            padding: 1rem;
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+            background-color: rgba(50, 50, 50, 0.5);
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            color: rgba(0, 255, 0, 0.9);
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .discount-badge {
+            background-color: rgba(0, 255, 0, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+            display: none;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #00cc00;
+            transform: scale(var(--hover-scale));
+        }
+
+        .add-to-cart-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Cart Modal */
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: rgba(0, 30, 0, 0.9);
+            position: sticky;
+            top: 0;
+        }
+
+        .close-cart-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .cart-content {
+            padding: 1rem;
+            flex: 1;
+        }
+
+        .cart-items {
+            margin-bottom: 2rem;
+        }
+
+        .cart-item {
+            background-color: rgba(30, 30, 30, 0.8);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-item-price {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            margin-left: 1rem;
+        }
+
+        .quantity-btn {
+            background-color: rgba(0, 255, 0, 0.2);
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-value {
+            margin: 0 0.5rem;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            color: #ff5555;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+
+        .cart-summary {
+            background-color: rgba(30, 30, 30, 0.8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-row {
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-top: 1px solid rgba(0, 255, 0, 0.3);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .checkout-form {
+            background-color: rgba(30, 30, 30, 0.8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: rgba(50, 50, 50, 0.8);
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .delivery-info {
+            background-color: rgba(0, 50, 0, 0.3);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .whatsapp-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all var(--transition-speed);
+        }
+
+        .whatsapp-btn:hover {
+            background-color: #128C7E;
+            transform: scale(var(--hover-scale));
+        }
+
+        /* Testimonials Section */
+        .testimonials-section {
+            padding: 2rem 1rem;
+            background-color: rgba(10, 10, 10, 0.8);
+            margin: 2rem 0;
+        }
+
+        .testimonials-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .testimonials-title::after {
+            content: "";
+            display: block;
+            width: 100px;
+            height: 3px;
+            background-color: var(--primary-color);
+            margin: 0.5rem auto;
+        }
+
+        .testimonials-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+            padding: 1rem 0;
+            scrollbar-width: none;
+        }
+
+        .testimonials-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .testimonial-card {
+            flex: 0 0 90%;
+            scroll-snap-align: start;
+            background-color: rgba(30, 30, 30, 0.8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .testimonial-quote {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .testimonial-quote::before {
+            content: """;
+            position: absolute;
+            left: 0;
+            top: -10px;
+            font-size: 3rem;
+            color: rgba(0, 255, 0, 0.3);
+            font-family: Georgia, serif;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .testimonial-product {
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Floating WhatsApp Button */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            text-decoration: none;
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(var(--hover-scale));
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background-color: rgba(0, 255, 0, 0.9);
+            color: #000;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transform: translateX(150%);
+            opacity: 0;
+            transition: all 0.5s ease;
+            max-width: 300px;
+            pointer-events: auto;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 2rem 1rem;
+            background-color: rgba(10, 10, 10, 0.8);
+            margin: 2rem 0;
+        }
+
+        .faq-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+            padding-bottom: 1rem;
+        }
+
+        .faq-question {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 0.5rem 0;
+            color: rgba(0, 255, 0, 0.9);
+        }
+
+        .faq-question.active + .faq-answer {
+            display: block;
+        }
+
+        /* Security Badges */
+        .security-section {
+            padding: 1rem;
+            text-align: center;
+            background-color: rgba(10, 10, 10, 0.8);
+            margin: 2rem 0;
+        }
+
+        .security-title {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .security-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .security-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .security-text {
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .catalog-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+            
+            .product-card {
+                padding: 0.75rem;
+            }
+            
+            .product-image {
+                height: 120px;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .catalog-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            
+            .product-card {
+                padding: 0.5rem;
+            }
+            
+            .product-image {
+                height: 100px;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
+            }
+            
+            header {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 255, 0, 0.3);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <button class="menu-btn" aria-label="Menú">☰</button>
+        <div class="logo" role="heading" aria-level="1">PLAXY</div>
+        <div class="cart-container" id="cartIcon">
+            <span class="cart-icon">🛒</span>
+            <span class="cart-count" id="cartCount">0</span>
+        </div>
+    </header>
+
+    <!-- Live Purchase Simulator -->
+    <div class="live-purchases" aria-live="polite">
+        <div class="live-title">Compras en tiempo real</div>
+        <div id="purchaseMessages"></div>
+    </div>
+
+    <!-- Catalog -->
+    <div class="catalog-container">
+        <div class="catalog-grid" id="catalogGrid">
+            <!-- Products will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <h2 class="testimonials-title">Lo que dicen nuestros clientes</h2>
+        <div class="testimonials-container" id="testimonialsContainer">
+            <!-- Testimonials will be dynamically inserted here -->
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <h2 class="faq-title">Preguntas Frecuentes</h2>
+        <div id="faqContainer">
+            <!-- FAQ items will be dynamically inserted here -->
+        </div>
+    </section>
+
+    <!-- Security Section -->
+    <section class="security-section">
+        <h3 class="security-title">Seguridad y Privacidad</h3>
+        <div class="security-badges">
+            <div class="security-badge">
+                <div class="security-icon">🔒</div>
+                <div class="security-text">Pagos Seguros</div>
+            </div>
+            <div class="security-badge">
+                <div class="security-icon">✅</div>
+                <div class="security-text">Entrega Garantizada</div>
+            </div>
+            <div class="security-badge">
+                <div class="security-icon">⏱️</div>
+                <div class="security-text">Hasta 15 minutos</div>
+            </div>
+            <div class="security-badge">
+                <div class="security-icon">📱</div>
+                <div class="security-text">Soporte 24/7</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/50251143339" class="floating-whatsapp" target="_blank" aria-label="Contactar por WhatsApp">
+        💬
+    </a>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-header">
+            <h2 class="cart-title">Tu Carrito</h2>
+            <button class="close-cart-btn" id="closeCartBtn" aria-label="Cerrar carrito">×</button>
+        </div>
+        <div class="cart-content">
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be dynamically inserted here -->
+            </div>
+            <div class="cart-summary" id="cartSummary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">Q0.00</span>
+                </div>
+                <div class="summary-row" id="discountRow" style="display: none;">
+                    <span>Descuento:</span>
+                    <span id="discountAmount">-Q0.00</span>
+                </div>
+                <div class="summary-row total-row">
+                    <span>Total:</span>
+                    <span id="total">Q0.00</span>
+                </div>
+            </div>
+            <div class="checkout-form">
+                <div class="form-group">
+                    <label class="form-label" for="fullName">Nombre completo</label>
+                    <input type="text" id="fullName" class="form-input" placeholder="Nombre y apellido" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="phone">Número de teléfono </label>
+                    <input type="tel" id="phone" class="form-input" placeholder="+502" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="bank">Selecciona tu banco</label>
+                    <select id="bank" class="form-select" required>
+                        <option value="">-- Selecciona un banco --</option>
+                        <option value="Banrural">Banrural</option>
+                        <option value="BAC">BAC</option>
+                        <option value="BAM">BAM</option>
+                        <option value="Banco Industrial">Banco Industrial</option>
+                    </select>
+                </div>
+            </div>
+            <div class="delivery-info">
+                <p><strong>Entrega estimada:</strong> hasta 15 minutos tras confirmación del depósito o transferencia bancaria. Guarda tu comprobante.</p>
+            </div>
+            <button class="whatsapp-btn" id="whatsappCheckoutBtn">
+                <span>💬</span>
+                <span>Pagar por WhatsApp</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Animation -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // Product data with image URLs
+        const products = [
+            {
+                id: 1,
+                name: "Netflix",
+                description: "Disfruta de series, películas y documentales en máxima calidad 4K.",
+                price: 35,
+                image: "https://i.postimg.cc/3JhS1ZMG/Netflix.png"
+            },
+            {
+                id: 2,
+                name: "Disney+",
+                description: "Acceso ilimitado a todo el contenido de Disney, Pixar, Marvel, Star Wars y National Geographic.",
+                price: 35,
+                image: "https://i.postimg.cc/9F9Tn3hg/Disney-Plus.png"
+            },
+            {
+                id: 3,
+                name: "HBO MAX",
+                description: "Las mejores series originales, películas y documentales en calidad premium.",
+                price: 35,
+                image: "https://i.postimg.cc/sxYS68QZ/Max-Cuenta-Completa-5-perfiles-1.png"
+            },
+            {
+                id: 4,
+                name: "Paramount",
+                description: "Contenido exclusivo de Paramount Pictures, Nickelodeon, MTV y Comedy Central.",
+                price: 35,
+                image: "https://i.postimg.cc/rF9x5B2B/Paramuont-Plus-300x387.png"
+            },
+            {
+                id: 5,
+                name: "ViX",
+                description: "El mayor catálogo de contenido en español con series, películas y programas originales.",
+                price: 35,
+                image: "https://i.postimg.cc/mkyzNHJY/Vi-X-300x387.png"
+            },
+            {
+                id: 6,
+                name: "Apple TV",
+                description: "Series y películas originales de Apple en la mejor calidad disponible.",
+                price: 35,
+                image: "https://i.postimg.cc/ZKgZsRmp/APPLE-TV.webp"
+            },
+            {
+                id: 7,
+                name: "Spotify",
+                description: "Millones de canciones sin anuncios, listas personalizadas y podcasts exclusivos.",
+                price: 35,
+                image: "https://i.postimg.cc/C5Xt7R8K/RENOVACION-O-CUENTA-NUEVA-INDIVIDUAL.webp"
+            },
+            {
+                id: 8,
+                name: "Apple Music",
+                description: "Catálogo completo de música, radio en vivo y listas curadas por expertos.",
+                price: 35,
+                image: "https://i.postimg.cc/3rk3Xm5Y/Apple-Music.png"
+            },
+            {
+                id: 9,
+                name: "YouTube Premium",
+                description: "Videos sin anuncios, reproducción en segundo plano y acceso a YouTube Music.",
+                price: 35,
+                image: "https://i.postimg.cc/c1P0XC0Y/You-Tube-Premium-Cuenta-Personal-1-Usuario-1-mes.png"
+            },
+            {
+                id: 10,
+                name: "Crunchyroll",
+                description: "Los últimos episodios de anime al mismo tiempo que en Japón, sin anuncios.",
+                price: 35,
+                image: "https://i.postimg.cc/ZK3Zgm5Q/Crunchyroll-Cuenta-Completa-4-Dispositivos.png"
+            },
+            {
+                id: 11,
+                name: "IPTV",
+                description: "Más de 10,000 canales internacionales, películas y series en vivo y bajo demanda.",
+                price: 35,
+                image: "https://i.postimg.cc/bNQcgR6c/IPTV.png"
+            }
+        ];
+
+        // Testimonials data
+        const testimonials = [
+            { name: "María López", product: "Netflix", text: "¡Increíble servicio! Recibí mis credenciales en menos de 10 minutos. Calidad 4K perfecta." },
+            { name: "Carlos Méndez", product: "Disney+", text: "Mis hijos están encantados. Todo el contenido de Marvel y Star Wars funcionando sin problemas." },
+            { name: "Ana García", product: "Spotify", text: "La mejor decisión. Sin anuncios y puedo descargar música para escuchar sin internet." },
+            { name: "Jorge Ramírez", product: "HBO", text: "Game of Thrones, House of the Dragon y todas las series originales en calidad máxima." },
+            { name: "Lucía Hernández", product: "YouTube Premium", text: "Ver videos mientras uso otras apps es increíble. ¡Vale cada quetzal!" },
+            { name: "Pedro Sánchez", product: "Paramount", text: "Contenido exclusivo que no encuentras en otras plataformas. Muy recomendado." },
+            { name: "Sofía Martínez", product: "Apple TV", text: "Las producciones originales son de cine. Ted Lasso es simplemente genial." },
+            { name: "Diego Flores", product: "Crunchyroll", text: "Anime al día siguiente de Japón. Subtítulos y doblaje perfectos." },
+            { name: "Valeria Ruiz", product: "ViX", text: "Todo el contenido en español que necesitas. Telenovelas, películas y series originales." },
+            { name: "Ricardo Torres", product: "IPTV", text: "Más de 10,000 canales. Deportes, noticias, películas. Todo en un solo lugar." },
+            { name: "Isabel González", product: "Apple Music", text: "La calidad de audio es superior. Las listas personalizadas son exactamente lo que me gusta." },
+            { name: "Manuel Cruz", product: "Netflix", text: "Funciona perfecto en todos mis dispositivos. Cambié de proveedor y no me arrepiento." },
+            { name: "Gabriela Díaz", product: "Disney+", text: "Toda la magia de Disney en un solo lugar. Hasta los clásicos animados están aquí." },
+            { name: "Fernando Vargas", product: "HBO", text: "The Last of Us, Succession, The White Lotus... calidad cinematográfica en casa." },
+            { name: "Natalia Morales", product: "Spotify", text: "Descubro nueva música todos los días gracias a sus algoritmos inteligentes." },
+            { name: "Alberto Reyes", product: "YouTube Premium", text: "Adiós anuncios molestos. Ahora disfruto mis creadores favoritos sin interrupciones." },
+            { name: "Carmen Silva", product: "Paramount", text: "Los clásicos de Nickelodeon y MTV que crecí viendo, ahora disponibles cuando quiera." },
+            { name: "Roberto Castro", product: "Apple TV", text: "Ted Lasso me salvó la vida. Literalmente. Y la calidad 4K es impresionante." },
+            { name: "Daniela Ortega", product: "Crunchyroll", text: "No tengo que esperar semanas para ver el nuevo capítulo de mi anime favorito." },
+            { name: "Tomás Mendoza", product: "ViX", text: "El mejor servicio para contenido en español. Incluso tienen telenovelas clásicas." },
+            { name: "Patricia Jiménez", product: "IPTV", text: "Todos los canales deportivos, de noticias y películas que necesito en un solo servicio." },
+            { name: "Luis Fernández", product: "Apple Music", text: "La biblioteca es enorme y la calidad de sonido es superior a otros servicios." },
+            { name: "Elena Rodríguez", product: "Netflix", text: "Recomendaciones perfectas y calidad 4K en todas mis pantallas." },
+            { name: "Sergio Herrera", product: "Disney+", text: "Desde los clásicos animados hasta lo último de Marvel. Todo en un solo lugar." },
+            { name: "Monica Vega", product: "HBO", text: "Las mejores series de la televisión actual. Producciones dignas de cine." },
+            { name: "Alejandro Luna", product: "Spotify", text: "Mis playlists personalizadas son exactamente lo que necesito cada día." },
+            { name: "Beatriz Ríos", product: "YouTube Premium", text: "Escuchar música sin video y sin anuncios ha cambiado mi experiencia completamente." },
+            { name: "Mario Guzmán", product: "Paramount", text: "Contenido exclusivo que no encuentras en ninguna otra plataforma." },
+            { name: "Claudia Espinoza", product: "Apple TV", text: "Producciones originales que compiten con las mejores películas de Hollywood." },
+            { name: "Raúl Paredes", product: "Crunchyroll", text: "El servicio más completo para fans de anime. Subtítulos y doblaje de calidad." }
+        ];
+
+        // Live purchase messages
+        const purchaseMessages = [
+            "Carlos de Guatemala acaba de comprar Netflix",
+            "María de Ciudad de Guatemala adquirió Disney+ y HBO",
+            "Jorge de Mixco compró Spotify y Apple Music",
+            "Ana de Villa Nueva se llevó YouTube Premium",
+            "Luis de Escuintla adquirió el paquete completo: ¡5 servicios!",
+            "Sofía de Quetzaltenango compró Crunchyroll",
+            "Pedro de San Miguel Petapa se llevó IPTV",
+            "Valeria de Chinautla compró ViX y Paramount",
+            "Ricardo de San Juan Sacatepéquez adquirió Apple TV",
+            "Isabel de San Cristóbal Cucho compró Netflix y Spotify",
+            "Manuel de Amatitlán se llevó Disney+ y HBO",
+            "Gabriela de San José Pinula compró el paquete familiar completo",
+            "Fernando de Villa Canales adquirió YouTube Premium y Apple Music",
+            "Natalia de Fraijanes compró Crunchyroll y ViX",
+            "Alberto de San Pedro Ayampuc se llevó IPTV y Netflix",
+            "Carmen de Palencia adquirió Paramount y Apple TV",
+            "Roberto de San Raymundo compró Disney+ y Spotify",
+            "Daniela de Chuarrancho se llevó HBO y YouTube Premium",
+            "Tomás de San José del Golfo adquirió ViX y Crunchyroll",
+            "Patricia de San Pedro Sacatepéquez compró el paquete premium completo",
+            "Luis de San Pablo Jocopilas se llevó Apple Music y Netflix",
+            "Elena de San Juan Alotenango adquirió Disney+ y ViX",
+            "Sergio de San Bartolomé Milpas Altas compró HBO y Paramount",
+            "Monica de San Lucas Sacatepéquez se llevó YouTube Premium e IPTV",
+            "Alejandro de San Antonio Aguas Calientes adquirió Apple TV y Crunchyroll",
+            "Beatriz de Santa Catarina Barahona compró Spotify y Netflix",
+            "Mario de Magdalena Milpas Altas se llevó Disney+ y Apple Music",
+            "Claudia de Santiago Sacatepéquez adquirió HBO y ViX",
+            "Raúl de San Bartolo compró Paramount y YouTube Premium",
+            "Julia de San Andrés Itzapa se llevó el paquete completo de 7 servicios"
+        ];
+
+        // FAQ data
+        const faqData = [
+            {
+                question: "¿Cómo funciona la entrega?",
+                answer: "Una vez confirmado tu pago, te enviaremos las credenciales a tu WhatsApp en un máximo de 15 minutos. Recibirás instrucciones detalladas para acceder a tu servicio."
+            },
+            {
+                question: "¿Qué métodos de pago aceptan?",
+                answer: "Aceptamos transferencias y depósitos bancarios en Banrural, BAC, BAM y Banco Industrial. Después de realizar tu pago, guarda tu comprobante ya que podríamos solicitarlo para verificar la transacción."
+            },
+            {
+                question: "¿Puedo usar el servicio en varios dispositivos?",
+                answer: "Sí, la mayoría de nuestros servicios permiten entre 2 y 4 pantallas simultáneas, dependiendo de la plataforma. Consulta las especificaciones de cada producto para más detalles."
+            },
+            {
+                question: "¿Qué pasa si tengo problemas con mi cuenta?",
+                answer: "Ofrecemos soporte técnico gratuito durante toda la duración de tu suscripción. Puedes contactarnos por WhatsApp y resolveremos cualquier inconveniente en el menor tiempo posible."
+            },
+            {
+                question: "¿Hay contratos o permanencia mínima?",
+                answer: "No, nuestros servicios son mensuales y puedes cancelar en cualquier momento sin penalizaciones. Solo pagas por el tiempo que realmente usas el servicio."
+            },
+            {
+                question: "¿Los precios incluyen IVA?",
+                answer: "Sí, todos nuestros precios son finales e incluyen cualquier impuesto aplicable. No habrá cargos adicionales después de tu compra."
+            }
+        ];
+
+        // Shopping cart
+        let cart = [];
+
+        // DOM elements
+        const catalogGrid = document.getElementById('catalogGrid');
+        const cartIcon = document.getElementById('cartIcon');
+        const cartCount = document.getElementById('cartCount');
+        const cartModal = document.getElementById('cartModal');
+        const closeCartBtn = document.getElementById('closeCartBtn');
+        const cartItems = document.getElementById('cartItems');
+        const subtotalElement = document.getElementById('subtotal');
+        const discountRow = document.getElementById('discountRow');
+        const discountAmount = document.getElementById('discountAmount');
+        const totalElement = document.getElementById('total');
+        const whatsappCheckoutBtn = document.getElementById('whatsappCheckoutBtn');
+        const toastContainer = document.getElementById('toastContainer');
+        const purchaseMessagesContainer = document.getElementById('purchaseMessages');
+        const testimonialsContainer = document.getElementById('testimonialsContainer');
+        const faqContainer = document.getElementById('faqContainer');
+        const loading = document.getElementById('loading');
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeProducts();
+            initializeLivePurchases();
+            initializeTestimonials();
+            initializeFAQ();
+            setupEventListeners();
+        });
+
+        // Initialize products in catalog
+        function initializeProducts() {
+            catalogGrid.innerHTML = '';
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.style.backgroundColor='rgba(50,50,50,0.5)'; this.textContent='Imagen no disponible'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center';">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-price">
+                        Q${product.price.toFixed(2)}
+                        <span class="discount-badge" id="discount-${product.id}"></span>
+                    </div>
+                    <button class="add-to-cart-btn" data-id="${product.id}">Agregar al carrito</button>
+                `;
+                catalogGrid.appendChild(productCard);
+            });
+
+            // Add event listeners to Add to Cart buttons
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    addToCart(productId);
+                });
+            });
+        }
+
+        // Add product to cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1
+                });
+            }
+
+            updateCartCount();
+            showToast(`${product.name} agregado al carrito`);
+            updateProductDiscounts();
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const totalCount = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalCount;
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toastContainer.removeChild(toast);
+                }, 500);
+            }, 3000);
+        }
+
+        // Initialize live purchases simulator
+        function initializeLivePurchases() {
+            let currentIndex = 0;
+            
+            function showNextMessage() {
+                // Clear previous messages
+                purchaseMessagesContainer.innerHTML = '';
+                
+                // Create and show new message
+                const messageElement = document.createElement('div');
+                messageElement.className = 'purchase-message';
+                messageElement.textContent = purchaseMessages[currentIndex];
+                
+                purchaseMessagesContainer.appendChild(messageElement);
+                
+                // Trigger animation
+                setTimeout(() => {
+                    messageElement.classList.add('active');
+                }, 100);
+                
+                // Update index
+                currentIndex = (currentIndex + 1) % purchaseMessages.length;
+            }
+            
+            // Show first message immediately
+            showNextMessage();
+            
+            // Set interval for subsequent messages
+            setInterval(showNextMessage, 2000);
+        }
+
+        // Initialize testimonials
+        function initializeTestimonials() {
+            testimonialsContainer.innerHTML = '';
+            testimonials.forEach(testimonial => {
+                const testimonialCard = document.createElement('div');
+                testimonialCard.className = 'testimonial-card';
+                testimonialCard.innerHTML = `
+                    <p class="testimonial-quote">${testimonial.text}</p>
+                    <div class="testimonial-author">${testimonial.name}</div>
+                    <div class="testimonial-product">Producto: ${testimonial.product}</div>
+                `;
+                testimonialsContainer.appendChild(testimonialCard);
+            });
+
+            // Auto-scroll testimonials
+            let scrollIndex = 0;
+            const scrollTestimonials = () => {
+                if (testimonialsContainer.children.length > 0) {
+                    const cardWidth = testimonialsContainer.children[0].offsetWidth + 16; // 16px for gap
+                    testimonialsContainer.scrollTo({
+                        left: scrollIndex * cardWidth,
+                        behavior: 'smooth'
+                    });
+                    
+                    scrollIndex = (scrollIndex + 1) % testimonials.length;
+                }
+            };
+
+            // Start auto-scroll
+            setInterval(scrollTestimonials, 5000);
+        }
+
+        // Initialize FAQ
+        function initializeFAQ() {
+            faqContainer.innerHTML = '';
+            faqData.forEach(item => {
+                const faqItem = document.createElement('div');
+                faqItem.className = 'faq-item';
+                faqItem.innerHTML = `
+                    <div class="faq-question">
+                        ${item.question}
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">${item.answer}</div>
+                `;
+                faqContainer.appendChild(faqItem);
+            });
+
+            // Add click handlers to FAQ questions
+            document.querySelectorAll('.faq-question').forEach(question => {
+                question.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const answer = this.nextElementSibling;
+                    if (this.classList.contains('active')) {
+                        this.querySelector('span').textContent = '−';
+                    } else {
+                        this.querySelector('span').textContent = '+';
+                    }
+                });
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Open cart modal
+            cartIcon.addEventListener('click', openCart);
+            
+            // Close cart modal
+            closeCartBtn.addEventListener('click', closeCart);
+            
+            // Close cart when clicking outside
+            cartModal.addEventListener('click', function(e) {
+                if (e.target === cartModal) {
+                    closeCart();
+                }
+            });
+            
+            // WhatsApp checkout
+            whatsappCheckoutBtn.addEventListener('click', handleWhatsAppCheckout);
+            
+            // Menu button (for future implementation)
+            document.querySelector('.menu-btn').addEventListener('click', function() {
+                showToast('Menú secundario (próximamente)');
+            });
+        }
+
+        // Open cart modal
+        function openCart() {
+            renderCartItems();
+            updateCartTotals();
+            cartModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close cart modal
+        function closeCart() {
+            cartModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Render cart items
+        function renderCartItems() {
+            cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p>Tu carrito está vacío</p>';
+                return;
+            }
+            
+            cart.forEach(item => {
+                const product = products.find(p => p.id === item.id);
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">Q${(product.price - getDiscountPerItem()).toFixed(2)} c/u</div>
+                    </div>
+                    <div class="cart-item-quantity">
+                        <button class="quantity-btn decrease-btn" data-id="${item.id}">-</button>
+                        <span class="quantity-value">${item.quantity}</span>
+                        <button class="quantity-btn increase-btn" data-id="${item.id}">+</button>
+                    </div>
+                    <button class="remove-btn" data-id="${item.id}">🗑️</button>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+            
+            // Add event listeners to quantity buttons
+            document.querySelectorAll('.decrease-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    decreaseQuantity(id);
+                });
+            });
+            
+            document.querySelectorAll('.increase-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    increaseQuantity(id);
+                });
+            });
+            
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    removeFromCart(id);
+                });
+            });
+        }
+
+        // Increase quantity
+        function increaseQuantity(productId) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += 1;
+                updateCart();
+            }
+        }
+
+        // Decrease quantity
+        function decreaseQuantity(productId) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                if (item.quantity > 1) {
+                    item.quantity -= 1;
+                } else {
+                    removeFromCart(productId);
+                    return;
+                }
+                updateCart();
+            }
+        }
+
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        // Update cart
+        function updateCart() {
+            updateCartCount();
+            renderCartItems();
+            updateCartTotals();
+            updateProductDiscounts();
+        }
+
+        // Calculate discount per item
+        function getDiscountPerItem() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            return totalItems >= 3 ? 5 : 0;
+        }
+
+        // Update product discounts
+        function updateProductDiscounts() {
+            const discountPerItem = getDiscountPerItem();
+            
+            products.forEach(product => {
+                const discountBadge = document.getElementById(`discount-${product.id}`);
+                if (discountPerItem > 0) {
+                    discountBadge.textContent = `-${discountPerItem} Q`;
+                    discountBadge.style.display = 'inline-block';
+                } else {
+                    discountBadge.style.display = 'none';
+                }
+            });
+        }
+
+        // Update cart totals
+        function updateCartTotals() {
+            const discountPerItem = getDiscountPerItem();
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const totalDiscount = discountPerItem * cart.reduce((sum, item) => sum + item.quantity, 0);
+            const total = subtotal - totalDiscount;
+            
+            subtotalElement.textContent = `Q${subtotal.toFixed(2)}`;
+            
+            if (totalDiscount > 0) {
+                discountRow.style.display = 'flex';
+                discountAmount.textContent = `-Q${totalDiscount.toFixed(2)}`;
+            } else {
+                discountRow.style.display = 'none';
+            }
+            
+            totalElement.textContent = `Q${total.toFixed(2)}`;
+        }
+
+        // Handle WhatsApp checkout
+        function handleWhatsAppCheckout() {
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const bank = document.getElementById('bank').value;
+            
+            if (!fullName || !phone || !bank) {
+                showToast('Por favor completa todos los campos');
+                return;
+            }
+            
+            if (!phone.startsWith('+502')) {
+                showToast('El número debe comenzar con +502');
+                return;
+            }
+            
+            // Show loading
+            loading.style.display = 'flex';
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                loading.style.display = 'none';
+                
+                // Generate order summary
+                let orderText = `¡Hola! Quiero realizar mi pedido en PLAXY.%0A%0A`;
+                orderText += `*Datos del cliente:*%0A`;
+                orderText += `Nombre: ${fullName}%0A`;
+                orderText += `Teléfono: ${phone}%0A`;
+                orderText += `Banco: ${bank}%0A%0A`;
+                orderText += `*Productos:*%0A`;
+                
+                const discountPerItem = getDiscountPerItem();
+                let totalPrice = 0;
+                
+                cart.forEach(item => {
+                    const product = products.find(p => p.id === item.id);
+                    const finalPrice = product.price - discountPerItem;
+                    const itemTotal = finalPrice * item.quantity;
+                    totalPrice += itemTotal;
+                    
+                    orderText += `${item.name} x${item.quantity} - Q${finalPrice.toFixed(2)} c/u - Total: Q${itemTotal.toFixed(2)}%0A`;
+                });
+                
+                orderText += `%0A*DESCUENTO APLICADO:* Q${(discountPerItem * cart.reduce((sum, item) => sum + item.quantity, 0)).toFixed(2)}%0A`;
+                orderText += `*TOTAL A PAGAR:* Q${totalPrice.toFixed(2)}%0A%0A`;
+                orderText += `*Instrucciones:* Realizaré el pago y les enviaré el comprobante.%0A`;
+                orderText += `Entendido que la entrega es hasta 15 minutos tras confirmación del pago.`;
+                
+                // Redirect to WhatsApp
+                window.open(`https://wa.me/50251143339?text=${orderText}`, '_blank');
+                
+                // Show confirmation
+                showToast('Redirigiendo a WhatsApp...');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
